@@ -411,43 +411,71 @@ footer{
 </main>
 
 <script>
-
 const messages = document.getElementById("messages");
 const promptBox = document.getElementById("prompt");
 
-function addMessage(text,type){
+let currentProvider = "openai";
 
+function addMessage(text, type) {
   const div = document.createElement("div");
-
   div.className = "message " + type;
   div.textContent = text;
-
   messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight;
 }
 
-function sendMessage(){
-
+async function sendMessage() {
   const text = promptBox.value.trim();
 
-  if(!text) return;
+  if (!text) return;
 
-  addMessage(text,"user");
+  addMessage(text, "user");
+  promptBox.value = "";
 
-  promptBox.value="";
+  const loading = document.createElement("div");
+  loading.className = "message ai";
+  loading.textContent = "NEXUS AI is thinking...";
+  messages.appendChild(loading);
 
-  setTimeout(()=>{
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: text,
+        provider: currentProvider
+      })
+    });
+
+    const data = await response.json();
+
+    loading.remove();
+
+    if (!response.ok) {
+      addMessage(
+        "⚠️ " + (data.error || "Something went wrong."),
+        "ai"
+      );
+      return;
+    }
+
+    addMessage(data.answer || "No response received.", "ai");
+
+  } catch (error) {
+    loading.remove();
 
     addMessage(
-      "NEXUS AI is ready. Connect your secure backend API to enable real Gemini, ChatGPT and Grok responses.",
+      "⚠️ Cannot connect to the NEXUS AI server.",
       "ai"
     );
 
-  },500);
+    console.error(error);
+  }
 }
 
-function clearChat(){
-
+function clearChat() {
   messages.innerHTML = "";
 
   addMessage(
@@ -456,42 +484,32 @@ function clearChat(){
   );
 }
 
-function attachFile(){
-
+function attachFile() {
   addMessage(
-    "File workspace selected. A backend connection is required for real file processing.",
+    "📎 File processing will be enabled after the file system is connected.",
     "ai"
   );
 }
 
-function appBuilder(){
-
+function appBuilder() {
   promptBox.value =
     "Build me a modern responsive web application for ";
   promptBox.focus();
-
 }
 
-function compareModels(){
-
+function compareModels() {
   addMessage(
-    "Compare mode selected. Once the backend is connected, NEXUS AI can send the same prompt to multiple models and display their responses together.",
+    "⚖️ Multi-model comparison will be enabled next.",
     "ai"
   );
-
 }
 
-promptBox.addEventListener("keydown",(e)=>{
-
-  if(e.key==="Enter" && !e.shiftKey){
-
+promptBox.addEventListener("keydown", function(e) {
+  if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
     sendMessage();
-
   }
-
 });
-
 </script>
 
 </body>
