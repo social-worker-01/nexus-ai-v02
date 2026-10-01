@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#07070b">
+<title>NEXUS AI</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+:root{
+  --bg:#07070b;
+  --panel:#101017;
+  --panel2:#15151e;
+  --border:rgba(255,255,255,.09);
+  --text:#f5f5f7;
+  --muted:#8d8d9b;
+  --accent:#7c5cff;
+  --accent2:#00d4ff;
+}
+
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 20% 0%,rgba(124,92,255,.18),transparent 30%),
+    radial-gradient(circle at 90% 20%,rgba(0,212,255,.12),transparent 28%),
+    var(--bg);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+header{
+  height:70px;
+  padding:0 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  background:rgba(7,7,11,.75);
+  backdrop-filter:blur(18px);
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+
+.logo{
+  font-size:21px;
+  font-weight:800;
+  letter-spacing:2px;
+}
+
+.logo span{
+  color:var(--accent);
+}
+
+.status{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  color:#aaa;
+  font-size:12px;
+}
+
+.dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#30e68b;
+  box-shadow:0 0 12px #30e68b;
+}
+
+main{
+  max-width:1200px;
+  margin:auto;
+  padding:35px 18px 80px;
+}
+
+.hero{
+  text-align:center;
+  padding:55px 10px 35px;
+}
+
+.hero h1{
+  font-size:clamp(42px,8vw,82px);
+  line-height:.95;
+  letter-spacing:-4px;
+  font-weight:900;
+}
+
+.gradient{
+  background:linear-gradient(90deg,#fff,#8d7cff,#00d4ff);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.hero p{
+  max-width:650px;
+  margin:22px auto 0;
+  color:var(--muted);
+  font-size:16px;
+  line-height:1.7;
+}
+
+.models{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin:25px 0;
+}
+
+.model{
+  padding:18px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:linear-gradient(145deg,var(--panel),rgba(16,16,23,.55));
+  transition:.25s;
+}
+
+.model:hover{
+  transform:translateY(-3px);
+  border-color:rgba(124,92,255,.45);
+}
+
+.model b{
+  display:block;
+  margin-bottom:7px;
+}
+
+.model small{
+  color:var(--muted);
+}
+
+.workspace{
+  border:1px solid var(--border);
+  background:rgba(16,16,23,.82);
+  border-radius:24px;
+  overflow:hidden;
+  box-shadow:0 25px 80px rgba(0,0,0,.35);
+}
+
+.toolbar{
+  padding:14px 16px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.toolbar span{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.clear{
+  border:0;
+  background:transparent;
+  color:#999;
+  cursor:pointer;
+}
+
+.messages{
+  min-height:330px;
+  max-height:500px;
+  overflow:auto;
+  padding:20px;
+}
+
+.message{
+  max-width:85%;
+  padding:14px 16px;
+  border-radius:16px;
+  margin-bottom:14px;
+  line-height:1.6;
+  white-space:pre-wrap;
+}
+
+.ai{
+  background:#15151e;
+  border:1px solid var(--border);
+}
+
+.user{
+  margin-left:auto;
+  background:linear-gradient(135deg,#6248d9,#4433a5);
+}
+
+.composer{
+  padding:15px;
+  border-top:1px solid var(--border);
+}
+
+textarea{
+  width:100%;
+  min-height:90px;
+  resize:vertical;
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:15px;
+  outline:none;
+  color:white;
+  background:#0b0b10;
+  font:inherit;
+}
+
+textarea:focus{
+  border-color:rgba(124,92,255,.7);
+}
+
+.actions{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:12px;
+  gap:10px;
+}
+
+.tools{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+button{
+  border:1px solid var(--border);
+  background:#15151e;
+  color:white;
+  padding:10px 14px;
+  border-radius:12px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+button:hover{
+  border-color:#7259ed;
+  transform:translateY(-1px);
+}
+
+.send{
+  background:linear-gradient(135deg,#7659ff,#4f39c8);
+  border:0;
+  padding:12px 22px;
+  font-weight:700;
+}
+
+.features{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+  margin-top:25px;
+}
+
+.feature{
+  padding:22px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:var(--panel);
+}
+
+.feature h3{
+  margin-bottom:8px;
+}
+
+.feature p{
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.6;
+}
+
+footer{
+  text-align:center;
+  color:#666;
+  font-size:12px;
+  padding:35px 0;
+}
+
+@media(max-width:700px){
+  .models,.features{
+    grid-template-columns:1fr;
+  }
+
+  .hero h1{
+    letter-spacing:-2px;
+  }
+
+  .message{
+    max-width:94%;
+  }
+
+  header{
+    padding:0 14px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">NEXUS<span>AI</span></div>
+
+  <div class="status">
+    <span class="dot"></span>
+    System Online
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <h1>One prompt.<br><span class="gradient">Every AI.</span></h1>
+  <p>
+    NEXUS AI is a unified AI workspace designed to bring powerful models,
+    app creation and intelligent workflows into one premium interface.
+  </p>
+</section>
+
+<section class="models">
+
+  <div class="model">
+    <b>✦ Gemini</b>
+    <small>Google AI model</small>
+  </div>
+
+  <div class="model">
+    <b>◉ ChatGPT</b>
+    <small>OpenAI model</small>
+  </div>
+
+  <div class="model">
+    <b>✕ Grok</b>
+    <small>xAI model</small>
+  </div>
+
+</section>
+
+<section class="workspace">
+
+  <div class="toolbar">
+    <span>AI Workspace</span>
+    <button class="clear" onclick="clearChat()">Clear</button>
+  </div>
+
+  <div class="messages" id="messages">
+
+    <div class="message ai">
+      Welcome to NEXUS AI 👋
+
+      Ask me anything, describe an app you want to build,
+      or start creating your next project.
+    </div>
+
+  </div>
+
+  <div class="composer">
+
+    <textarea
+      id="prompt"
+      placeholder="Ask NEXUS AI anything..."
+    ></textarea>
+
+    <div class="actions">
+
+      <div class="tools">
+        <button onclick="attachFile()">📎 File</button>
+        <button onclick="appBuilder()">⚡ App Builder</button>
+        <button onclick="compareModels()">⚖ Compare</button>
+      </div>
+
+      <button class="send" onclick="sendMessage()">Send ↗</button>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section class="features">
+
+  <div class="feature">
+    <h3>⚡ Multi-AI</h3>
+    <p>
+      Designed for connecting multiple AI providers through one interface.
+    </p>
+  </div>
+
+  <div class="feature">
+    <h3>🛠 App Builder</h3>
+    <p>
+      Describe an application and turn the idea into a working project.
+    </p>
+  </div>
+
+  <div class="feature">
+    <h3>📦 Export</h3>
+    <p>
+      Prepare generated projects for download and deployment.
+    </p>
+  </div>
+
+</section>
+
+<footer>
+  NEXUS AI • Built for the next generation of creators
+</footer>
+
+</main>
+
+<script>
+
+const messages = document.getElementById("messages");
+const promptBox = document.getElementById("prompt");
+
+function addMessage(text,type){
+
+  const div = document.createElement("div");
+
+  div.className = "message " + type;
+  div.textContent = text;
+
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function sendMessage(){
+
+  const text = promptBox.value.trim();
+
+  if(!text) return;
+
+  addMessage(text,"user");
+
+  promptBox.value="";
+
+  setTimeout(()=>{
+
+    addMessage(
+      "NEXUS AI is ready. Connect your secure backend API to enable real Gemini, ChatGPT and Grok responses.",
+      "ai"
+    );
+
+  },500);
+}
+
+function clearChat(){
+
+  messages.innerHTML = "";
+
+  addMessage(
+    "Workspace cleared. What would you like to create?",
+    "ai"
+  );
+}
+
+function attachFile(){
+
+  addMessage(
+    "File workspace selected. A backend connection is required for real file processing.",
+    "ai"
+  );
+}
+
+function appBuilder(){
+
+  promptBox.value =
+    "Build me a modern responsive web application for ";
+  promptBox.focus();
+
+}
+
+function compareModels(){
+
+  addMessage(
+    "Compare mode selected. Once the backend is connected, NEXUS AI can send the same prompt to multiple models and display their responses together.",
+    "ai"
+  );
+
+}
+
+promptBox.addEventListener("keydown",(e)=>{
+
+  if(e.key==="Enter" && !e.shiftKey){
+
+    e.preventDefault();
+    sendMessage();
+
+  }
+
+});
+
+</script>
+
+</body>
+  </html>
